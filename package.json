@@ -17,6 +17,7 @@
     "@babel/preset-env": "^7.28.3",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
+    "dotenv": "^17.2.1",
     "dotenv-webpack": "^8.1.1",
     "mini-css-extract-plugin": "^2.9.4",
     "postcss-loader": "^8.1.1",
