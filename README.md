@@ -1,0 +1,5 @@
+# Gameshow
+
+```bash
+npm install
+```
