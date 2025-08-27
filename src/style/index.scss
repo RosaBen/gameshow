@@ -15,6 +15,11 @@ $color-container: linear-gradient(
 	rgba(255, 255, 255, 0.5)
 );
 $color-list: rgba(234, 87, 83, 0.7);
+$background-btn: red;
+
+body{
+  margin: 2rem auto;
+}
 
 li{
   list-style-type: none;
@@ -38,7 +43,7 @@ nav{
 
 // TITLE PAGE
 .homeTitle a{
-  color: red;
+  color: $background-btn;
   text-decoration: none;
   font-size: 1.5rem;
 }
@@ -129,10 +134,13 @@ nav{
 // SELECT PLATFORM
 
 main{
-  margin: 2rem auto;
+  margin: 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+
 }
 .home-selection{
-  background-color: red;
+  background-color: $background-btn;
   border-radius: 1rem;
   width: 15rem;
   height: 3rem;
@@ -145,14 +153,14 @@ main{
 }
 
 .home-selection h2{
-   background-color: red;
+   background-color: $background-btn;
 }
 .home-selection label{
   color: $color-text;
 }
 
 .home-selection select{
-  background-color: red;
+  background-color: $background-btn;
   border: none;
   color: $color-text;
   font-size: 1.2rem;
@@ -170,7 +178,7 @@ main{
 }
 
 #home-platforms option{
-  background-color: red;
+  background-color: $background-btn;
   width: 10rem;
 }
 
@@ -186,7 +194,7 @@ main{
   border: none;
   cursor: pointer;
   font-weight: 700;
-  background: red
+  background: $background-btn
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23FFF' class='size-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E%0A")
       right 10px center / 20px no-repeat;
   @media (hover: hover) {
@@ -206,7 +214,7 @@ main{
       &::picker(select) {
         padding: 0;
         margin-top: 1rem;
-        border: 2px solid red;
+        border: 2px solid $background-btn;
         background: $color-text;
         border-radius: 20px;
         font-weight: 400;
@@ -255,6 +263,24 @@ main{
 }
 
 // CARDS
+section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .showMoreDiv{
+  background-color: $background-btn;
+  border-radius: 1rem;
+  
+  .showMoreBtn{
+    background-color: $background-btn;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    height: 2rem;
+    padding: 0 1rem;
+  }
+}
+}
 .cards-container{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -434,4 +460,19 @@ main{
 }
 
 
+// FOOTER
+footer{
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  p{
+    color: white;
+  }
+}
+.footer-border{
+  width: 25%;
+  height: 1rem;
+  background-color: $background-btn;
+}
 
