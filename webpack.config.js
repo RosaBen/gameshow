@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // Webpack utilise ce module Node.js pour travailler avec les dossiers.
 const path = require('path');
+const webpack = require('webpack');
 const Dotenv = require("dotenv-webpack");
 const { watch } = require("fs");
 
