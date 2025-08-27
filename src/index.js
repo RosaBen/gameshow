@@ -41,6 +41,16 @@ const getGames = async (urls, page = 1, pageSize = 9) => {
   }
 }
 
+const searchPlaceholder = () => {
+  const input = document.querySelector('.search-input');
+  input.addEventListener('mouseenter', () => {
+    input.setAttribute('placeholder', 'Search...');
+  });
+  input.addEventListener('mouseleave', () => {
+    input.removeAttribute('placeholder');
+  })
+}
+
 // createHtmlHomepage = () => {
 
 // }
@@ -49,11 +59,12 @@ const getGames = async (urls, page = 1, pageSize = 9) => {
 const initPage = async () => {
   const urls = createUrls();
   const { results, next } = await getGames(urls);
+  const placeholderSearch = searchPlaceholder();
   console.log('Résultats obtenus :', results);
   console.log('Prochaine page :', next);
 
   return {
-    urls, results, next
+    urls, results, next, placeholderSearch
   };
 };
 
