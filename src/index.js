@@ -23,7 +23,6 @@ const createUrls = () => {
 
 }
 
-// page = 1, pageSize = 40, filters = null
 // get allgames
 const getGames = async (urls, page = 1, pageSize = 9) => {
   try {
@@ -42,7 +41,11 @@ const getGames = async (urls, page = 1, pageSize = 9) => {
   }
 }
 
-// Ajout de logs pour déboguer initPage
+// createHtmlHomepage = () => {
+
+// }
+
+// Initialize page
 const initPage = async () => {
   const urls = createUrls();
   const { results, next } = await getGames(urls);
