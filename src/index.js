@@ -44,75 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   }
-  // console.log('get games', getGames());
-  const header = document.querySelector('header');
-  const main = document.querySelector('main');
-  const footer = document.querySelector('footer');
-  // const platforms = ['Any', 'PC', 'Xbox'];
-  // const cards = [{
-  //   poster: "https://media.rawg.io/media/games/b45/b45575f34285f2c4479c9a5f719d972e.jpg",
-  //   title: 'Gametitle',
-  //   platforms: ['p1', 'p2', 'p3'],
-  //   released: 'Released: 25 sep 2025',
-  //   editor: 'Editor: jgfskgsaashasfh',
-  //   rating: 4.45,
-  //   count: '1200 votes',
-  //   genres: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6']
-  // },
-  // {
-  //   poster: "https://media.rawg.io/media/games/b45/b45575f34285f2c4479c9a5f719d972e.jpg",
-  //   title: 'Gametitle',
-  //   platforms: ['p1', 'p2', 'p3'],
-  //   released: 'Released: 25 sep 2025',
-  //   editor: 'Editor: jgfskgsaashasfh',
-  //   rating: 4.45,
-  //   count: '1200 votes',
-  //   genres: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6']
-  // },
-  // {
-  //   poster: "https://media.rawg.io/media/games/b45/b45575f34285f2c4479c9a5f719d972e.jpg",
-  //   title: 'Gametitle',
-  //   platforms: ['p1', 'p2', 'p3'],
-  //   released: 'Released: 25 sep 2025',
-  //   editor: 'Editor: jgfskgsaashasfh',
-  //   rating: 4.45,
-  //   count: '1200 votes',
-  //   genres: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6']
-  // },
-  // {
-  //   poster: "https://media.rawg.io/media/games/b45/b45575f34285f2c4479c9a5f719d972e.jpg",
-  //   title: 'Gametitle',
-  //   platforms: ['p1', 'p2', 'p3'],
-  //   released: 'Released: 25 sep 2025',
-  //   editor: 'Editor: jgfskgsaashasfh',
-  //   rating: 4.45,
-  //   count: '1200 votes',
-  //   genres: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6']
-  // }
 
-  // ]
-  // const urls = createUrls();
-  // const { results, next } = await getGames(urls);
-
-  // get params from api
-  const getParamsGames = async () => {
-    const urls = createUrls();
-    const { results } = await getGames(urls);
-    return results.map(result => ({
-      slug: result.slug,
-      title: result.name,
-      released: result.released,
-      poster: result.background_image,
-      genres: result.genres,
-      platforms: result.platforms,
-      rating: result.rating,
-      votes: result.ratings_count,
-      editor: result.publishers,
-      gameId: result.id
-    }));
-  }
-
-  // Fetch the list of platforms from the API
+  // get all platforms
   const getPlatforms = async (urls) => {
     try {
       const response = await fetch(urls.platforms);
@@ -123,6 +56,69 @@ document.addEventListener('DOMContentLoaded', () => {
       return [];
     }
   };
+
+
+  // get developers for a specific game using game details endpoint
+  const getDevelopers = async (urls, gameId) => {
+    try {
+      // Use the game details endpoint to get developers
+      let gameDetailsUrl = `${apiUrl}games/${gameId}${keyParam}${key}`;
+      console.log('Fetching developers for game:', gameId, 'URL:', gameDetailsUrl);
+      const response = await fetch(gameDetailsUrl);
+      const data = await response.json();
+
+      // Return the developers from the game details
+      const developers = data.developers ? data.developers.map(developer => developer.name) : [];
+      console.log('Developers found for game', gameId, ':', developers);
+      return developers;
+    } catch (error) {
+      console.error('Error fetching developers for game:', gameId, error);
+      return [];
+    }
+  };
+
+  // Helper function to add developers to games
+  const addDevelopersToGames = async (games, urls) => {
+    return await Promise.all(games.map(async (game) => {
+      const developers = await getDevelopers(urls, game.id);
+      return {
+        ...game,
+        developers: developers
+      };
+    }));
+  };
+  // console.log('get games', getGames());
+  const header = document.querySelector('header');
+  const main = document.querySelector('main');
+  const footer = document.querySelector('footer');
+
+  // get params from api
+  const getParamsGames = async () => {
+    const urls = createUrls();
+    const { results } = await getGames(urls);
+
+    const games = results.map(result => ({
+      slug: result.slug,
+      title: result.name,
+      released: result.released,
+      poster: result.background_image,
+      genres: result.genres,
+      platforms: result.platforms,
+      rating: result.rating,
+      votes: result.ratings_count,
+      editor: '',
+      gameId: result.id,
+      developers: [] // Initialize developers array
+    }));
+
+    // Fetch developers for each game
+    await Promise.all(games.map(async (game) => {
+      const developers = await getDevelopers(urls, game.gameId);
+      game.developers = developers;
+    }));
+
+    return games; // Return the games with developers
+  }
 
   // Create body of html to share per pages
   const htmlBody = () => {
@@ -174,28 +170,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // create Html for homepage
-  const createHtmlHomepage = async () => {
+  const createHtmlHomepage = async (page = 1, pageSize = 9, selectedPlatform = 'Default') => {
     try {
       const urls = createUrls();
-      const gamesData = await getParamsGames();
-      const platformNames = await getPlatforms(urls); // Fetch platform names
+      const { results: games, next } = await getGames(urls, page, pageSize);
+
+      // Add developers to each game using the helper function
+      const gamesWithDevelopers = await addDevelopersToGames(games, urls);
 
       htmlBody();
 
-      // Header-------------------------------------------------------------
-      const nextChildHeader = document.querySelector('.animated-border');
-      const divHomeText = document.createElement('div');
-      header.insertBefore(divHomeText, nextChildHeader);
-      divHomeText.classList.add('home-header');
-      const homeHeaderH2 = document.createElement('h2');
-      const homeHeaderP = document.createElement('p');
-      homeHeaderH2.textContent = 'Welcome,';
-      homeHeaderP.textContent = 'The Hyper Progame is the world’s premier event for computer and video games and related products. At The Hyper Progame, the video game industry’s top talent pack the Los Angeles Convention Center, connecting tens of thousands of the best, brightest, and most innovative in the interactive entertainment industry. For three exciting days, leading-edge companies, groundbreaking new technologies, and never-before-seen products will be showcased. The Hyper Progame connects you with both new and existing partners, industry executives, gamers, and social influencers providing unprecedented exposure.';
-      divHomeText.appendChild(homeHeaderH2);
-      divHomeText.appendChild(homeHeaderP);
+      // Clear previous content
+      main.innerHTML = '';
 
-
-      // Main
       // Platforms Filter
       const divFilterHome = document.createElement('div');
       divFilterHome.classList.add('home-selection');
@@ -210,45 +197,62 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultOption.textContent = 'Any';
       homePlatformFilter.appendChild(defaultOption);
 
-      // Add platforms to the select dropdown
-      platformNames.forEach((platformName, index) => {
+      const platformNames = await getPlatforms(urls);
+      platformNames.forEach((platformName) => {
         const option = document.createElement('option');
-        option.value = `platform-${index + 1}`;
-        option.textContent = platformName.charAt(0).toUpperCase() + platformName.slice(1); // Capitalize
+        option.value = platformName.toLowerCase();
+        option.textContent = platformName.length <= 3 ? platformName.toUpperCase() : platformName.charAt(0).toUpperCase() + platformName.slice(1);
         homePlatformFilter.appendChild(option);
+      });
+
+      homePlatformFilter.value = selectedPlatform;
+      homePlatformFilter.addEventListener('change', (event) => {
+        createHtmlHomepage(page, pageSize, event.target.value);
       });
 
       divFilterHome.appendChild(homePlatformH2);
       divFilterHome.appendChild(homePlatformFilter);
+      main.appendChild(divFilterHome);
 
-      // Section 
+      // Section for cards
       const homeSection = document.createElement('section');
-      // Cards
       const divCardsContainer = document.createElement('div');
       divCardsContainer.classList.add('cards-container');
 
-      gamesData.forEach(card => {
+      const filteredGames = selectedPlatform === 'Default'
+        ? gamesWithDevelopers
+        : gamesWithDevelopers.filter(game => game.platforms.some(platform => platform.platform.name.toLowerCase() === selectedPlatform));
+
+      if (filteredGames.length === 0) {
+        const noGamesMessage = document.createElement('p');
+        noGamesMessage.textContent = 'No games available for the selected platform.';
+        main.appendChild(noGamesMessage);
+        return;
+      }
+
+      for (const game of filteredGames) {
         const divCardHome = document.createElement('div');
         divCardHome.classList.add('home-card');
+
         // Front card
         const cardFront = document.createElement('div');
         cardFront.classList.add('front-card');
         const frontImgDiv = document.createElement('div');
         frontImgDiv.classList.add('front-div-img');
         const cardPoster = document.createElement('img');
-        cardPoster.src = card.poster;
-        cardPoster.alt = card.title;
+        cardPoster.src = game.background_image;
+        cardPoster.alt = game.name;
         cardPoster.classList.add('home-poster');
         const frontdetailsDiv = document.createElement('div');
         frontdetailsDiv.classList.add('front-details');
         const cardTitle = document.createElement('h3');
-        cardTitle.textContent = card.title;
+        cardTitle.textContent = game.name;
         const cardPlatforms = document.createElement('div');
         cardPlatforms.classList.add('home-platforms-container');
         const platformsH4 = document.createElement('h4');
         platformsH4.textContent = 'Platforms';
         const platformsList = document.createElement('ul');
-        card.platforms.forEach(platform => {
+        game.platforms.forEach(platform => {
           const li = document.createElement('li');
           li.classList.add('fr-platform-item');
           li.textContent = platform.platform.name;
@@ -264,25 +268,27 @@ document.addEventListener('DOMContentLoaded', () => {
         divPText.classList.add('back-p-text');
         const pReleased = document.createElement('p');
         const pEditor = document.createElement('p');
-        pReleased.textContent = card.released;
-        pEditor.textContent = card.editor;
+        pReleased.textContent = `Released: ${game.released || 'TBD'}`;
+        pEditor.textContent = `Developers: ${game.developers && game.developers.length > 0 ? game.developers.join(', ') : 'Unknown'}`;
         const divRateCount = document.createElement('div');
         divRateCount.classList.add('back-p-rate-vote');
         const pRating = document.createElement('p');
         const pCount = document.createElement('p');
-        pRating.textContent = `Rating: ${card.rating}`;
-        pCount.textContent = `Votes: ${card.votes}`;
+        pRating.textContent = `Rating: ${game.rating || 'N/A'}`;
+        pCount.textContent = `Votes: ${game.ratings_count || '0'}`;
         const divBackGenres = document.createElement('div');
         divBackGenres.classList.add('home-genres-container');
         const genresH4 = document.createElement('h4');
         genresH4.textContent = 'Genres';
         const genresList = document.createElement('ul');
-        card.genres.forEach(genre => {
-          const li = document.createElement('li');
-          li.classList.add('bc-genre-item');
-          li.textContent = genre.name;
-          genresList.appendChild(li);
-        });
+        if (game.genres && game.genres.length > 0) {
+          game.genres.forEach(genre => {
+            const li = document.createElement('li');
+            li.classList.add('bc-genre-item');
+            li.textContent = genre.name;
+            genresList.appendChild(li);
+          });
+        }
 
         divBackGenres.appendChild(genresH4);
         divBackGenres.appendChild(genresList);
@@ -292,6 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
         divPText.appendChild(pEditor);
         divBackDetails.appendChild(divPText);
         divBackDetails.appendChild(divRateCount);
+        cardBack.appendChild(divBackDetails);
+        cardBack.appendChild(divBackGenres);
+
         cardPlatforms.appendChild(platformsH4);
         cardPlatforms.appendChild(platformsList);
         frontdetailsDiv.appendChild(cardTitle);
@@ -299,16 +308,27 @@ document.addEventListener('DOMContentLoaded', () => {
         frontImgDiv.appendChild(cardPoster);
         cardFront.appendChild(frontImgDiv);
         cardFront.appendChild(frontdetailsDiv);
-        cardBack.appendChild(divBackDetails);
-        cardBack.appendChild(divBackGenres);
+
         divCardHome.appendChild(cardFront);
         divCardHome.appendChild(cardBack);
         divCardsContainer.appendChild(divCardHome);
-      });
+      }
 
       homeSection.appendChild(divCardsContainer);
-      main.appendChild(divFilterHome);
       main.appendChild(homeSection);
+
+      // Add pagination if there are more games
+      if (next) {
+        const paginationDiv = document.createElement('div');
+        paginationDiv.classList.add('pagination');
+        const nextPageButton = document.createElement('button');
+        nextPageButton.textContent = 'Next Page';
+        nextPageButton.addEventListener('click', () => {
+          createHtmlHomepage(page + 1, pageSize, selectedPlatform);
+        });
+        paginationDiv.appendChild(nextPageButton);
+        main.appendChild(paginationDiv);
+      }
     } catch (error) {
       console.error('Error in createHtmlHomepage:', error);
     }
