@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentPage = 1;
   let hasNextPage = false;
   let currentPlatform = 'Default';
+  let currentSearchTerm = '';
+  let isLoading = false;
 
   // Router for SPA navigation
   const router = {
@@ -58,9 +60,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // get all games
-  const getGames = async (urls, page = 1, pageSize = 9) => {
+  const getGames = async (urls, page = 1, pageSize = 9, searchTerm = '', platformFilter = 'Default') => {
     try {
       let gamesUrl = `${urls.games}&page_size=${pageSize}&page=${page}`;
+
+      if (searchTerm && searchTerm.trim() !== '') {
+        gamesUrl += `&search=${encodeURIComponent(searchTerm.trim())}`;
+      }
+
+      if (platformFilter && platformFilter !== 'Default') {
+        // Get platform ID for the filter
+        const platformsResponse = await fetch(urls.platforms);
+        const platformsData = await platformsResponse.json();
+        const platform = platformsData.results.find(p =>
+          p.name.toLowerCase().trim() === platformFilter.toLowerCase()
+        );
+        if (platform) {
+          gamesUrl += `&platforms=${platform.id}`;
+        }
+      }
+
       const response = await fetch(gamesUrl);
       const data = await response.json();
 
@@ -159,6 +178,23 @@ document.addEventListener('DOMContentLoaded', () => {
     navSearchInput.type = 'text';
     navSearchInput.name = 'search';
     navSearchInput.classList.add('search-input');
+    navSearchInput.placeholder = 'Search games...';
+
+    // Search functionality
+    let searchTimeout;
+    navSearchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentSearchTerm = e.target.value;
+        showHomepage();
+      }, 500); // Debounce search
+    });
+
+    navLinkFa.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentSearchTerm = navSearchInput.value;
+      showHomepage();
+    });
 
     navLinkFa.appendChild(navIcon);
     navLink1.appendChild(navH1);
@@ -194,8 +230,40 @@ document.addEventListener('DOMContentLoaded', () => {
     footer.appendChild(pFooter);
   }
 
+  // Intersection Observer for card animations
+  let cardObserver;
+
+  const initializeCardObserver = () => {
+    if (cardObserver) {
+      cardObserver.disconnect();
+    }
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          // Add a slight delay based on the card position for staggered effect
+          setTimeout(() => {
+            entry.target.classList.add('card-visible');
+            entry.target.classList.remove('card-hidden');
+          }, index * 100);
+        } else {
+          entry.target.classList.add('card-hidden');
+          entry.target.classList.remove('card-visible');
+        }
+      });
+    }, observerOptions);
+  };
+
   // Show homepage
   const showHomepage = async (loadMore = false) => {
+    if (isLoading) return;
+    isLoading = true;
+
     try {
       const urls = createUrls();
 
@@ -205,9 +273,12 @@ document.addEventListener('DOMContentLoaded', () => {
         currentGames = [];
         main.innerHTML = '';
         htmlBody();
+
+        // Initialize card observer
+        initializeCardObserver();
       }
 
-      const { results: games, next } = await getGames(urls, currentPage, 9);
+      const { results: games, next } = await getGames(urls, currentPage, 9, currentSearchTerm, currentPlatform);
       const gamesWithDevelopers = await addDevelopersToGames(games, urls);
 
       if (loadMore) {
@@ -270,6 +341,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!loadMore) {
         divCardsContainer.innerHTML = '';
+
+        // Show no results message if needed
+        if (filteredGames.length === 0) {
+          const noResultsMessage = document.createElement('div');
+          noResultsMessage.classList.add('no-results');
+          noResultsMessage.innerHTML = `
+            <h3>No games found</h3>
+            <p>Try adjusting your search or filter criteria</p>
+          `;
+          divCardsContainer.appendChild(noResultsMessage);
+          return;
+        }
       }
 
       if (filteredGames.length === 0 && !loadMore) {
@@ -311,13 +394,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       console.error('Error in showHomepage:', error);
+    } finally {
+      isLoading = false;
     }
   };
 
   // Create a game card
   const createGameCard = (game, container) => {
     const divCardHome = document.createElement('div');
-    divCardHome.classList.add('home-card');
+    divCardHome.classList.add('home-card', 'card-hidden'); // Start hidden
 
     // Front card
     const cardFront = document.createElement('div');
@@ -412,6 +497,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     divBackGenres.appendChild(genresList);
 
+    // Tags section
+    const divBackTags = document.createElement('div');
+    divBackTags.classList.add('home-tags-container');
+    const tagsList = document.createElement('ul');
+    if (game.tags && game.tags.length > 0) {
+      game.tags.slice(0, 3).forEach(tag => {
+        const li = document.createElement('li');
+        li.classList.add('bc-tag-item');
+        li.textContent = tag.name.length > 8 ? tag.name.substring(0, 8) + '...' : tag.name;
+        tagsList.appendChild(li);
+      });
+    }
+    divBackTags.appendChild(tagsList);
+
     const readMoreBtn = document.createElement('button');
     readMoreBtn.classList.add('read-more-btn');
     readMoreBtn.textContent = 'Read More';
@@ -423,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cardBack.appendChild(divBackTop);
     cardBack.appendChild(divBackMiddle);
     cardBack.appendChild(divBackGenres);
+    cardBack.appendChild(divBackTags);
     cardBack.appendChild(readMoreBtn);
 
     cardPlatforms.appendChild(platformsList);
@@ -436,6 +536,11 @@ document.addEventListener('DOMContentLoaded', () => {
     divCardHome.appendChild(cardFront);
     divCardHome.appendChild(cardBack);
     container.appendChild(divCardHome);
+
+    // Add card to observer
+    if (cardObserver) {
+      cardObserver.observe(divCardHome);
+    }
   };
 
   // Show game detail page
