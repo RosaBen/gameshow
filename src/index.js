@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let gamesUrl = `${urls.games}&page_size=${pageSize}&page=${page}`;
       const response = await fetch(gamesUrl);
       const data = await response.json();
+
       return {
         results: data.results,
         next: data.next
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   }
-
+  // console.log('get games', getGames());
   const header = document.querySelector('header');
   const main = document.querySelector('main');
   const footer = document.querySelector('footer');
@@ -90,8 +91,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   ]
+  // const urls = createUrls();
+  // const { results, next } = await getGames(urls);
 
-  // Create body of html to see in any pages
+  // get params from api
+  const getParamsGames = (results) => {
+    return results.map(result => ({
+      slug: result.slug,
+      title: result.name,
+      released: result.released,
+      poster: result.background_image,
+      genres: result.genres,
+      platforms: result.platforms,
+      rating: result.rating,
+      votes: result.ratings_count,
+      editors: result.publishers,
+      gameId: result.id
+    }));
+  }
+
+  // Create body of html to share per pages
   const htmlBody = () => {
     // navbar--------------------------------------
     const nav = document.createElement('nav');
@@ -139,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // create Html for homepage
   const createHtmlHomepage = () => {
     const bodyHtml = htmlBody();
     // Header-------------------------------------------------------------
@@ -284,9 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-
-
-
   // styling search bar
   const searchPlaceholder = () => {
     const input = document.querySelector('.search-input');
@@ -303,12 +320,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize page
   const initPage = async () => {
     const urls = createUrls();
-    const { results, next } = await getGames(urls);
+    const { results } = await getGames(urls);
+    getParamsGames(results);
     createHtmlHomepage();
     searchPlaceholder();
-    console.log('Résultats obtenus :', results);
-    console.log('Next obtenus :', next);
-
+    console.log('results:', getParamsGames(results));
   };
 
   initPage();
