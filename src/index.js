@@ -112,6 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
   }
 
+  // Fetch the list of platforms from the API
+  const getPlatforms = async (urls) => {
+    try {
+      const response = await fetch(urls.platforms);
+      const data = await response.json();
+      return data.results.map(platform => platform.name.toLowerCase().trim());
+    } catch (error) {
+      console.error('Error fetching platforms:', error);
+      return [];
+    }
+  };
+
   // Create body of html to share per pages
   const htmlBody = () => {
 
@@ -164,7 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // create Html for homepage
   const createHtmlHomepage = async () => {
     try {
+      const urls = createUrls();
       const gamesData = await getParamsGames();
+      const platformNames = await getPlatforms(urls); // Fetch platform names
 
       htmlBody();
 
@@ -195,15 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultOption.value = 'Default';
       defaultOption.textContent = 'Any';
       homePlatformFilter.appendChild(defaultOption);
-      gamesData.forEach((game, index) => {
-        if (game.platforms) {
-          game.platforms.forEach((platform, platformIndex) => {
-            const option = document.createElement('option');
-            option.value = `option${index + 1}-${platformIndex + 1}`;
-            option.textContent = platform.platform.name;
-            homePlatformFilter.appendChild(option);
-          });
-        }
+
+      // Add platforms to the select dropdown
+      platformNames.forEach((platformName, index) => {
+        const option = document.createElement('option');
+        option.value = `platform-${index + 1}`;
+        option.textContent = platformName.charAt(0).toUpperCase() + platformName.slice(1); // Capitalize
+        homePlatformFilter.appendChild(option);
       });
 
       divFilterHome.appendChild(homePlatformH2);
