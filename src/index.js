@@ -153,6 +153,17 @@ document.addEventListener('DOMContentLoaded', () => {
     header.appendChild(nav);
 
     //  Header---------------------------------------------------------
+    const divHomeHeader = document.createElement('div');
+    divHomeHeader.classList.add('home-header');
+    const homeHeaderH2 = document.createElement('h2');
+    homeHeaderH2.textContent = 'Welcome,';
+    const homeHeaderP = document.createElement('p');
+    homeHeaderP.textContent = 'The Hyper Progame is the world\'s premier event for computer and video games and related products. At The Hyper Progame, the video game industry\'s top talent pack the Los Angeles Convention Center, connecting tens of thousands of the best, brightest, and most innovative in the interactive entertainment industry.';
+
+    divHomeHeader.appendChild(homeHeaderH2);
+    divHomeHeader.appendChild(homeHeaderP);
+    header.appendChild(divHomeHeader);
+
     const divAnimatedBorder = document.createElement('div');
     divAnimatedBorder.classList.add('animated-border');
     header.appendChild(divAnimatedBorder);
@@ -243,71 +254,105 @@ document.addEventListener('DOMContentLoaded', () => {
         cardPoster.src = game.background_image;
         cardPoster.alt = game.name;
         cardPoster.classList.add('home-poster');
+
+        // Front details positioned at bottom
         const frontdetailsDiv = document.createElement('div');
         frontdetailsDiv.classList.add('front-details');
         const cardTitle = document.createElement('h3');
         cardTitle.textContent = game.name;
         const cardPlatforms = document.createElement('div');
         cardPlatforms.classList.add('home-platforms-container');
-        const platformsH4 = document.createElement('h4');
-        platformsH4.textContent = 'Platforms';
         const platformsList = document.createElement('ul');
-        game.platforms.forEach(platform => {
+        game.platforms.slice(0, 3).forEach(platform => { // Limit to 3 platforms
           const li = document.createElement('li');
           li.classList.add('fr-platform-item');
-          li.textContent = platform.platform.name;
+          li.textContent = platform.platform.name.length > 8 ? platform.platform.name.substring(0, 8) + '...' : platform.platform.name;
           platformsList.appendChild(li);
         });
 
         // Back card
         const cardBack = document.createElement('div');
         cardBack.classList.add('back-card');
-        const divBackDetails = document.createElement('div');
-        divBackDetails.classList.add('card-back-details');
-        const divPText = document.createElement('div');
-        divPText.classList.add('back-p-text');
+
+        // Top section with release date and developers
+        const divBackTop = document.createElement('div');
+        divBackTop.classList.add('back-card-top');
         const pReleased = document.createElement('p');
-        const pEditor = document.createElement('p');
+        pReleased.classList.add('back-released');
         pReleased.textContent = `Released: ${game.released || 'TBD'}`;
-        pEditor.textContent = `Developers: ${game.developers && game.developers.length > 0 ? game.developers.join(', ') : 'Unknown'}`;
-        const divRateCount = document.createElement('div');
-        divRateCount.classList.add('back-p-rate-vote');
-        const pRating = document.createElement('p');
+
+        // Developers as buttons
+        const divDevelopers = document.createElement('div');
+        divDevelopers.classList.add('back-developers');
+        const developersContainer = document.createElement('div');
+        developersContainer.classList.add('developers-buttons');
+
+        if (game.developers && game.developers.length > 0) {
+          game.developers.slice(0, 3).forEach(developer => { // Limit to 3 developers
+            const devButton = document.createElement('button');
+            devButton.classList.add('developer-btn');
+            devButton.textContent = developer.length > 12 ? developer.substring(0, 12) + '...' : developer;
+            developersContainer.appendChild(devButton);
+          });
+        } else {
+          const devButton = document.createElement('button');
+          devButton.classList.add('developer-btn');
+          devButton.textContent = 'Unknown';
+          developersContainer.appendChild(devButton);
+        }
+
+        divDevelopers.appendChild(developersContainer);
+        divBackTop.appendChild(pReleased);
+        divBackTop.appendChild(divDevelopers);
+
+        // Middle section with rating circle and votes
+        const divBackMiddle = document.createElement('div');
+        divBackMiddle.classList.add('back-card-middle');
+
+        const ratingCircle = document.createElement('div');
+        ratingCircle.classList.add('rating-circle');
+        const rating = game.rating || 0;
+        if (rating >= 4) {
+          ratingCircle.classList.add('rating-high');
+        } else if (rating >= 2.5) {
+          ratingCircle.classList.add('rating-medium');
+        } else {
+          ratingCircle.classList.add('rating-low');
+        }
+        ratingCircle.textContent = rating.toFixed(1);
+
         const pCount = document.createElement('p');
-        pRating.textContent = `Rating: ${game.rating || 'N/A'}`;
-        pCount.textContent = `Votes: ${game.ratings_count || '0'}`;
+        pCount.classList.add('votes-count');
+        pCount.textContent = `${game.ratings_count || '0'} votes`;
+
+        divBackMiddle.appendChild(ratingCircle);
+        divBackMiddle.appendChild(pCount);
+
+        // Bottom section with genres
         const divBackGenres = document.createElement('div');
         divBackGenres.classList.add('home-genres-container');
-        const genresH4 = document.createElement('h4');
-        genresH4.textContent = 'Genres';
         const genresList = document.createElement('ul');
         if (game.genres && game.genres.length > 0) {
-          game.genres.forEach(genre => {
+          game.genres.slice(0, 4).forEach(genre => { // Limit to 4 genres
             const li = document.createElement('li');
             li.classList.add('bc-genre-item');
-            li.textContent = genre.name;
+            li.textContent = genre.name.length > 10 ? genre.name.substring(0, 10) + '...' : genre.name;
             genresList.appendChild(li);
           });
         }
 
-        divBackGenres.appendChild(genresH4);
         divBackGenres.appendChild(genresList);
-        divRateCount.appendChild(pRating);
-        divRateCount.appendChild(pCount);
-        divPText.appendChild(pReleased);
-        divPText.appendChild(pEditor);
-        divBackDetails.appendChild(divPText);
-        divBackDetails.appendChild(divRateCount);
-        cardBack.appendChild(divBackDetails);
+        cardBack.appendChild(divBackTop);
+        cardBack.appendChild(divBackMiddle);
         cardBack.appendChild(divBackGenres);
 
-        cardPlatforms.appendChild(platformsH4);
         cardPlatforms.appendChild(platformsList);
         frontdetailsDiv.appendChild(cardTitle);
         frontdetailsDiv.appendChild(cardPlatforms);
+
         frontImgDiv.appendChild(cardPoster);
+        frontImgDiv.appendChild(frontdetailsDiv); // Details positioned over image
         cardFront.appendChild(frontImgDiv);
-        cardFront.appendChild(frontdetailsDiv);
 
         divCardHome.appendChild(cardFront);
         divCardHome.appendChild(cardBack);
