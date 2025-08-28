@@ -344,6 +344,14 @@ document.addEventListener('DOMContentLoaded', () => {
       platformsList.appendChild(li);
     });
 
+    const readMoreBtn = document.createElement('button');
+    readMoreBtn.classList.add('read-more-btn');
+    readMoreBtn.textContent = 'Read More';
+    readMoreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      router.navigate(`/game/${game.slug}`);
+    });
+
     // Back card
     const cardBack = document.createElement('div');
     cardBack.classList.add('back-card');
@@ -411,23 +419,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     divBackGenres.appendChild(genresList);
-
-    const readMoreBtn = document.createElement('button');
-    readMoreBtn.classList.add('read-more-btn');
-    readMoreBtn.textContent = 'Read More';
-    readMoreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      router.navigate(`/game/${game.slug}`);
-    });
-
     cardBack.appendChild(divBackTop);
     cardBack.appendChild(divBackMiddle);
     cardBack.appendChild(divBackGenres);
-    cardBack.appendChild(readMoreBtn);
 
     cardPlatforms.appendChild(platformsList);
     frontdetailsDiv.appendChild(cardTitle);
     frontdetailsDiv.appendChild(cardPlatforms);
+    frontdetailsDiv.appendChild(readMoreBtn);
 
     frontImgDiv.appendChild(cardPoster);
     frontImgDiv.appendChild(frontdetailsDiv);
