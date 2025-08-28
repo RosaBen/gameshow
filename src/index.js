@@ -174,54 +174,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Section 
     const homeSection = document.createElement('section');
-
     // cards
-    // const divCardsContainer = document.createElement('div');
-    // divCardsContainer.classList.add('cards-container');
-    // cards.forEach(card => {
+    const divCardsContainer = document.createElement('div');
+    divCardsContainer.classList.add('cards-container');
+    // A card
+    cards.forEach(card => {
+      const divCardHome = document.createElement('div');
+      divCardHome.classList.add('home-card');
+      // front card
+      const cardFront = document.createElement('div');
+      cardFront.classList.add('front-card');
+      const frontImgDiv = document.createElement('div');
+      frontImgDiv.classList.add('front-div-img');
+      const cardPoster = document.createElement('img');
+      cardPoster.src = card.poster;
+      cardPoster.alt = card.title;
+      cardPoster.classList.add('home-poster');
+      const frontdetailsDiv = document.createElement('div');
+      frontdetailsDiv.classList.add('front-details');
+      const cardTitle = document.createElement('h3');
+      cardTitle.textContent = card.title;
+      const cardPlatforms = document.createElement('div');
+      cardPlatforms.classList.add('home-platforms-container');
+      const platformsH4 = document.createElement('h4');
+      platformsH4.textContent = 'Platforms';
+      const platformsList = document.createElement('ul');
+      card.platforms.forEach(platform => {
+        const li = document.createElement('li');
+        li.classList.add('fr-platform-item');
+        li.textContent = platform;
+        platformsList.appendChild(li);
 
-    // })
-    // card back
-    // const cardBack = document.createElement('div');
-    // cardBack.classList.add('back-card');
-    // const divBackDetails = document.createElement('div');
-    // divBackDetails.classList.add('card-back-details');
-    // const divPText = document.createElement('div');
-    // divPText.classlist.add('back-p-text');
-    // const pReleased = document.createElement('p');
-    // const pEditor = document.createElement('p');
-    // pReleased.textContent = card.released;
-    // pEditor.textContent = card.editor;
-    // const divRateCount = document.createElement('div');
-    // divRateCount.classList.add('back-p-rate-vote');
-    // const pRating = document.createElement('p');
-    // const pCount = document.createElement('p');
-    // pRating.textContent = card.rating;
-    // pCount.textContent = card.count;
-    // const divBackGenres = document.createElement('div');
-    // divBackGenres.classList.add('home-genres-container');
-    // const genresH4 = document.createElement('h4');
-    // genresH4.textContent = 'Genres';
-    // const genresList = document.createElement('ul');
-    // (card.genres).forEach(genre => {
-    //   const li = document.createElement('li');
-    //   li.classList.add('bc-genre-item');
-    //   li.textContent = genre;
-    //   genresList.appendChild(li);
-    // })
+      })
 
-    // divRateCount.appendChild(pRating);
-    // divRateCount.appendChild(pCount);
-    // divPText.appendChild(pReleased);
-    // divPText.appendChild(pEditor);
-    // divBackDetails.appendChild(divPText);
-    // divBackDetails.appendChild(divRateCount);
-    // divBackGenres.appendChild(genresH4);
-    // divBackGenres.appendChild(genresList);
-    // cardBack.appendChild(divBackDetails);
-    // cardBack.appendChild(divBackGenres);
-    // divCardHome.appendChild(cardBack);
-    // divCardsContainer.appendChild(divCardHome);
+      // back card
+
+      const cardBack = document.createElement('div');
+      cardBack.classList.add('back-card');
+      const divBackDetails = document.createElement('div');
+      divBackDetails.classList.add('card-back-details');
+      const divPText = document.createElement('div');
+      divPText.classList.add('back-p-text');
+      const pReleased = document.createElement('p');
+      const pEditor = document.createElement('p');
+      pReleased.textContent = card.released;
+      pEditor.textContent = card.editor;
+      const divRateCount = document.createElement('div');
+      divRateCount.classList.add('back-p-rate-vote');
+      const pRating = document.createElement('p');
+      const pCount = document.createElement('p');
+      pRating.textContent = card.rating;
+      pCount.textContent = card.count;
+      const divBackGenres = document.createElement('div');
+      divBackGenres.classList.add('home-genres-container');
+      const genresH4 = document.createElement('h4');
+      genresH4.textContent = 'Genres';
+      const genresList = document.createElement('ul');
+      (card.genres).forEach(genre => {
+        const li = document.createElement('li');
+        li.classList.add('bc-genre-item');
+        li.textContent = genre;
+        genresList.appendChild(li);
+      })
+
+      divBackGenres.appendChild(genresH4);
+      divBackGenres.appendChild(genresList);
+      divRateCount.appendChild(pRating);
+      divRateCount.appendChild(pCount);
+      divPText.appendChild(pReleased);
+      divPText.appendChild(pEditor);
+      divBackDetails.appendChild(divPText);
+      divBackDetails.appendChild(divRateCount);
+      cardPlatforms.appendChild(platformsH4);
+      cardPlatforms.appendChild(platformsList);
+      frontdetailsDiv.appendChild(cardTitle);
+      frontdetailsDiv.appendChild(cardPlatforms);
+      frontImgDiv.appendChild(cardPoster);
+      cardFront.appendChild(frontImgDiv);
+      cardFront.appendChild(frontdetailsDiv);
+      cardBack.appendChild(divBackDetails);
+      cardBack.appendChild(divBackGenres);
+      divCardHome.appendChild(cardFront);
+      divCardHome.appendChild(cardBack);
+      divCardsContainer.appendChild(divCardHome);
+
+
+
+    })
 
     // button
     // const divShowMoreBtn = document.createElement('div');
@@ -234,12 +273,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // homeSection.appendChild(divCardsContainer);
+    homeSection.appendChild(divCardsContainer);
     // homeSection.appendChild(divShowMoreBtn);
     main.appendChild(divFilterHome);
     main.appendChild(homeSection);
     return {
-      bodyHtml, divFilterHome
+      bodyHtml, divFilterHome, homeSection
     }
     // , divHomeText, homeHeaderH2, homeHeaderP, homePlatformH2, homePlatformFilter, homecard, homeSection, divCardsContainer, divShowMoreBtn
   }

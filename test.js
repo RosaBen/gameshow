@@ -44,57 +44,34 @@ const cards = [{
 
 ]
 
-// section
-const homeSection = document.createElement('section');
-// cards container
-// const divCardsContainer = document.createElement('div');
-// divCardsContainer.classList.add('cards-container');
-cards.forEach(card => {
-  // card
-  const divCardHome = document.createElement('div');
-  divCardHome.classlist.add('home-card');
-  // frontcard
-  const cardFront = document.createElement('div');
-  cardFront.classList.add('front-card');
-  // frontcardDivImg
-  const frontImgDiv = document.createElement('div');
-  frontImgDiv.classList.add('front-div-img');
-  // frontcardDivImgPoster
-  const cardPoster = document.createElement('img');
-  cardPoster.src = card.poster;
-  cardPoster.alt = card.title;
-  cardPoster.classList.add('home-poster');
-  // frontcardDetails
-  const frontdetailsDiv = document.createElement('div');
-  frontdetailsDiv.classList.add('front-details');
-  // frontcardDetailsH3
-  const cardTitle = document.createElement('h3');
-  cardTitle.textContent = card.title;
-  // frontcardDetailsdivPlatforms
-  const cardPlatforms = document.createElement('div');
-  cardPlatforms.classList.add('home-platforms-container');
-  // frontcardDetailsdivPlatformsH4
-  const platformsH4 = document.createElement('h4');
-  platformsH4.textContent = 'Platforms';
-  // frontcardDetailsdivPlatformsListUL
-  const platformsList = document.createElement('ul');
-  (card.platforms).forEach(platform => {
-    const li = document.createElement('li');
-    li.classList.add('fr-platform-item');
-    li.textContent = platform;
-    platformsList.appendChild(li)
-  })
-  cardPlatforms.appendChild(platformsH4);
-  cardPlatforms.appendChild(platformsList);
-  frontdetailsDiv.appendChild(cardTitle);
-  frontdetailsDiv.appendChild(cardPlatforms);
-  frontImgDiv.appendChild(cardPoster);
-  cardFront.appendChild(frontImgDiv);
-  cardFront.appendChild(frontdetailsDiv);
-  divCardHome.appendChild(cardFront);
-  divCardHome.appendChild(cardBack);
-  divCardsContainer.appendChild(divCardHome);
-})
+
+// card back
+
+// card back details
+
+
+// card back details text
+
+
+// card back details text P
+
+
+// card back details rate/count
+
+
+// card back details rate/count P
+
+
+// card back genres
+
+
+// card back genres h4
+
+
+// card back genres UL
+
+// card back genres UL LI
+
 
 // appendchildCard
 
@@ -105,8 +82,9 @@ cards.forEach(card => {
 
 
 // BtnShowMore
-const divShowMoreBtn = document.createElement('div');
-divShowMoreBtn.classList.add('showMoreDiv');
+// const divShowMoreBtn = document.createElement('div');
+// divShowMoreBtn.classList.add('showMoreDiv');
 // appendchild
+divCardHome.appendChild(cardBack);
 
 
