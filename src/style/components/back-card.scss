@@ -1,0 +1,205 @@
+/**
+ * Back card content styles
+ */
+
+@import '../base.scss';
+
+// BACK CARD TOP SECTION
+.back-card-top {
+  .back-released {
+    font-size: 0.9rem;
+    color: $color-primary;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .back-developers {
+    margin-bottom: 1rem;
+    
+    .developers-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      
+      .developer-btn {
+        background: rgba(150, 206, 180, 0.2);
+        border: 1px solid rgba(150, 206, 180, 0.4);
+        color: $color-text;
+        padding: 0.3rem 0.8rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        
+        &.clickable {
+          cursor: pointer;
+          
+          &:hover {
+            background: rgba(150, 206, 180, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(150, 206, 180, 0.3);
+          }
+        }
+        
+        &:hover {
+          background: rgba(150, 206, 180, 0.4);
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+}
+
+// BACK CARD MIDDLE SECTION
+.back-card-middle {
+  text-align: center;
+  margin: 1rem 0;
+  
+  .rating-circle {
+    width: 60px;
+    height: 60px;
+    @include flex-center;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 auto 0.5rem;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    &.rating-high {
+      background: linear-gradient(135deg, #96ceb4, #76c893);
+    }
+    
+    &.rating-medium {
+      background: linear-gradient(135deg, #feca57, #ff9ff3);
+    }
+    
+    &.rating-low {
+      background: linear-gradient(135deg, #ff7675, #fd79a8);
+    }
+  }
+  
+  .votes-count {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-align: center;
+  }
+}
+
+// GENRES CONTAINER
+.home-genres-container {
+  flex: 1 1 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    
+    .bc-genre-item {
+      background: rgba(69, 183, 209, 0.2);
+      border: 1px solid rgba(69, 183, 209, 0.4);
+      padding: 0.3rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &.clickable {
+        cursor: pointer;
+        
+        &:hover {
+          background: rgba(69, 183, 209, 0.6);
+          transform: translateY(-2px);
+        }
+      }
+      
+      &:hover {
+        background: rgba(69, 183, 209, 0.4);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// TAGS CONTAINER
+.home-tags-container {
+  flex: 1 1 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  margin-top: 0.5rem;
+  
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: center;
+    
+    .bc-tag-item {
+      background: rgba(255, 107, 107, 0.2);
+      border: 1px solid rgba(255, 107, 107, 0.4);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.8rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &.clickable {
+        cursor: pointer;
+        
+        &:hover {
+          background: rgba(255, 107, 107, 0.6);
+          transform: translateY(-2px);
+        }
+      }
+      
+      &:hover {
+        background: rgba(255, 107, 107, 0.4);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// READ MORE BUTTON
+.read-more-btn {
+  background: $gradient-primary;
+  border: none;
+  color: $color-text;
+  padding: 0.8rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: auto;
+  margin-bottom: 1rem;
+  align-self: center;
+  min-width: 140px;
+  
+  @include hover-lift;
+  
+  &:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  }
+  
+  &:active {
+    transform: translateY(-1px);
+  }
+}

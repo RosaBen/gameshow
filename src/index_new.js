@@ -106,10 +106,17 @@ const htmlBody = () => {
   nav.appendChild(navDiv2);
   header.appendChild(nav);
 
-  // Animated border (keeping your original animated div)
-  const animatedBorder = document.createElement('div');
-  animatedBorder.classList.add('animated-border');
-  header.appendChild(animatedBorder);
+  // Header description
+  const divHomeHeader = document.createElement('div');
+  divHomeHeader.classList.add('home-header');
+  const homeHeaderH2 = document.createElement('h2');
+  homeHeaderH2.textContent = 'Welcome,';
+  const homeHeaderP = document.createElement('p');
+  homeHeaderP.textContent = 'The Hyper Programme is the world\'s premier event for computer and video games. Discover the best games, connect with the gaming community, and explore never-before-seen products.';
+
+  divHomeHeader.appendChild(homeHeaderH2);
+  divHomeHeader.appendChild(homeHeaderP);
+  header.appendChild(divHomeHeader);
 
   // Main content
   main = document.createElement('main');
@@ -381,31 +388,9 @@ export const showGameDetail = async (slug) => {
       });
     }
 
-    // Developers section with clickable developers
-    const developersDiv = document.createElement('div');
-    developersDiv.classList.add('detail-developers');
-    if (gameData.developers && gameData.developers.length > 0) {
-      const developersTitle = document.createElement('h3');
-      developersTitle.textContent = 'Developers';
-      developersTitle.style.width = '100%';
-      developersTitle.style.marginBottom = '1rem';
-      developersDiv.appendChild(developersTitle);
-
-      gameData.developers.forEach(developer => {
-        const developerItem = document.createElement('span');
-        developerItem.classList.add('developer-item');
-        developerItem.textContent = developer.name;
-        developerItem.addEventListener('click', () => {
-          router.navigate(`/results/?type=developers&id=${developer.id}&name=${developer.name}`);
-        });
-        developersDiv.appendChild(developerItem);
-      });
-    }
-
     detailContent.appendChild(detailHeader);
     detailContent.appendChild(descriptionDiv);
     detailContent.appendChild(tagsDiv);
-    detailContent.appendChild(developersDiv);
     detailDiv.appendChild(detailContent);
 
     main.appendChild(detailNav);

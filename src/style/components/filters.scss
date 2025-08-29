@@ -1,0 +1,130 @@
+/**
+ * Filters and Platform Selection styles
+ */
+
+@import '../base.scss';
+
+// MAIN CONTENT
+main {
+  max-width: 1400px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  
+  @media (max-width: 768px) {
+    margin: 0.5rem auto;
+    padding: 0 0.5rem;
+  }
+}
+
+// PLATFORM SELECTION
+.home-selection {
+  background: $gradient-primary;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  h2 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  select {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+      background: white;
+    }
+    
+    &:hover {
+      background: white;
+      transform: translateY(-2px);
+    }
+    
+    option {
+      padding: 0.5rem;
+      background: white;
+      color: #333;
+    }
+  }
+}
+
+// RESULTS PAGE HEADER
+.results-header {
+  text-align: center;
+  padding: 2rem 0;
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: $gradient-primary;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: $color-text-muted;
+  }
+}
+
+// NAVIGATION BUTTONS
+.navigation-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    background: $gradient-secondary;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    
+    @include hover-lift;
+    
+    &:hover {
+      background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    }
+  }
+}
